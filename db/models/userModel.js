@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
-const mongoosePaginate = require('mongoose-paginate-v2');
+const mongoosePaginate = require("mongoose-paginate-v2");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const userSchema = new mongoose.Schema(
   {
     name: {
-      type: String
+      type: String,
     },
     lastName: {
-      type: String
+      type: String,
     },
     email: {
       type: String,
@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema(
     },
     passwordConfirm: {
       type: String,
-   },
+    },
     tel: {
       type: String,
     },
@@ -48,8 +48,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-
-userSchema.plugin(mongoosePaginate)
+userSchema.plugin(mongoosePaginate);
 
 userSchema.pre(/^find/, function (next) {
   this.select("-__v -createdAt -updatedAt -password -passwordConfirm");
@@ -57,8 +56,7 @@ userSchema.pre(/^find/, function (next) {
 });
 
 userSchema.pre("save", function (next) {
-  if(this.isModified("email"))
-     this.email = this.email.toLocaleLowerCase();
+  if (this.isModified("email")) this.email = this.email.toLocaleLowerCase();
   if (!this.isModified("password") || this.isNew) return next();
   this.passwordChangedAt = Date.now() - 1000;
   next();
@@ -95,6 +93,5 @@ userSchema.methods.createPasswordResetToken = function () {
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
   return resetToken;
 };
-
 
 module.exports = mongoose.model("User", userSchema);
