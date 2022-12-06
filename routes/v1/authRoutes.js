@@ -8,11 +8,12 @@ const {
 } = require("./schemas/authSchemas");
 const express = require("express");
 const router = express.Router();
+
 /**
  * @swagger
  * tags:
- *   name: User
- *   description: The User managing API
+ *   name: Auth
+ *   description: authentication managing API
  */
 
 /**
@@ -39,8 +40,7 @@ const router = express.Router();
  *
  */
 
- router.post("/register", schemaValidator(signup), authController.signUp);
-
+router.post("/register", schemaValidator(signup), authController.signUp);
 
 /**
  * @swagger
@@ -65,7 +65,7 @@ const router = express.Router();
  *
  */
 
- router.post("/login", schemaValidator(login), authController.login);
+router.post("/login", schemaValidator(login), authController.login);
 
 /**
  * @swagger
@@ -85,7 +85,7 @@ const router = express.Router();
  *      - bearerAuth: []
  */
 
- router.route("/me").get(authController.protect, authController.getMe);
+router.route("/me").get(authController.protect, authController.getMe);
 
 /**
  * @swagger
@@ -111,13 +111,13 @@ const router = express.Router();
  *      - bearerAuth: []
  */
 
- router
- .route("/updateMyPassword")
- .put(
-   authController.protect,
-   schemaValidator(updatePassword),
-   authController.updatePassword
- );
+router
+  .route("/updateMyPassword")
+  .put(
+    authController.protect,
+    schemaValidator(updatePassword),
+    authController.updatePassword
+  );
 
 /**
  * @swagger
@@ -142,13 +142,13 @@ const router = express.Router();
  *     security:
  *      - bearerAuth: []
  */
- router
- .route("/updateMe")
- .put(
-   authController.protect,
-   schemaValidator(updateMe),
-   authController.updateMe
- );
+router
+  .route("/updateMe")
+  .put(
+    authController.protect,
+    schemaValidator(updateMe),
+    authController.updateMe
+  );
 
 /**
  * @swagger
@@ -170,9 +170,9 @@ const router = express.Router();
  *                type: object
  *                properties:
  *                 status:
- *                  default : success 
+ *                  default : success
  *                 message:
- *                  default: Token sent to email! 
+ *                  default: Token sent to email!
  *       400:
  *         content:
  *           application/json:
@@ -180,15 +180,15 @@ const router = express.Router();
  *                type: object
  *                properties:
  *                 status:
- *                  default : fail 
+ *                  default : fail
  *                 message:
  *                  default: There was an error sending the email. Try again later!
  *     security:
  *      - bearerAuth: []
  */
- router.post('/forgotPassword', authController.forgotPassword);
+router.post("/forgotPassword", authController.forgotPassword);
 
- /**
+/**
  * @swagger
  * /resetPassword/{token}:
  *   patch:
@@ -211,9 +211,6 @@ const router = express.Router();
  *               type: object
  *               $ref: '#/components/schemas/User'
  */
- router.patch('/resetPassword/:token', authController.resetPassword);
-
-
-
+router.patch("/resetPassword/:token", authController.resetPassword);
 
 module.exports = router;

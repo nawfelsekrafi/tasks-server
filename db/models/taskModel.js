@@ -14,13 +14,13 @@ const taskSchema = new mongoose.Schema(
       required: [true, "Description can not be empty!"],
     },
     status: {
+      type: String,
       enum: ["todo", "in progress", "completed"],
       default: "todo",
     },
     user: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
-      required: [true, "task must has a user who did create it"],
     },
     sharedWith: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
     deletedAt: Date,

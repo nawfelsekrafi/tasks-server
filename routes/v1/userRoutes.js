@@ -10,6 +10,12 @@ const {
 } = require("./schemas/userSchemas");
 const { schemaValidator } = require("../../middlewares/schemaValidator");
 
+/**
+ * @swagger
+ * tags:
+ *   name: User
+ *   description: The User managing API
+ */
 
 /**
  * @swagger
@@ -71,14 +77,13 @@ const { schemaValidator } = require("../../middlewares/schemaValidator");
  *      - bearerAuth: []
  */
 
- router.get(
+router.get(
   "/",
   authController.protect,
   authController.restrictTo("admin"),
   schemaValidator(getUsers, "query"),
   userController.getUsers
 );
-
 
 /**
  * @swagger
@@ -100,15 +105,14 @@ const { schemaValidator } = require("../../middlewares/schemaValidator");
  *      - bearerAuth: []
  */
 
- router
- .route("/:id")
- .get(
-   authController.protect,
-   authController.restrictTo("admin"),
-   schemaValidator(checkUserId, "params"),
-   userController.getUser
- );
-
+router
+  .route("/:id")
+  .get(
+    authController.protect,
+    authController.restrictTo("admin"),
+    schemaValidator(checkUserId, "params"),
+    userController.getUser
+  );
 
 /**
  * @swagger
@@ -135,14 +139,13 @@ const { schemaValidator } = require("../../middlewares/schemaValidator");
  *
  */
 
- router.post(
+router.post(
   "/",
   authController.protect,
   authController.restrictTo("admin"),
   schemaValidator(createUser),
   userController.createUser
 );
-
 
 /**
  * @swagger
@@ -170,7 +173,7 @@ const { schemaValidator } = require("../../middlewares/schemaValidator");
  *      - bearerAuth: []
  */
 
- router.put(
+router.put(
   "/:id",
   authController.protect,
   authController.restrictTo("admin"),
@@ -178,7 +181,6 @@ const { schemaValidator } = require("../../middlewares/schemaValidator");
   schemaValidator(updateUser),
   userController.updateUser
 );
-
 
 /**
  * @swagger
@@ -200,14 +202,12 @@ const { schemaValidator } = require("../../middlewares/schemaValidator");
  *      - bearerAuth: []
  */
 
- router.delete(
+router.delete(
   "/:id",
   authController.protect,
   authController.restrictTo("admin"),
   schemaValidator(checkUserId, "params"),
   userController.deleteUser
 );
-
-
 
 module.exports = router;
