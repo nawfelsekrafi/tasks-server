@@ -53,6 +53,12 @@ const { JoiObjectId } = require("../../../middlewares/schemaValidator");
  *         status:
  *           type: string
  *           description: task status todo or in progress or completed
+ *     ShareTask:
+ *       type: object
+ *       properties:
+ *         sharedWith:
+ *           type: [string]
+ *           description: id of user/users to share the task with
  */
 
 exports.getTasks = Joi.object({
@@ -76,6 +82,9 @@ exports.updateTask = Joi.object({
   title: Joi.string().trim().min(3).max(30).optional(),
   description: Joi.string().trim().min(3).max(1000).optional(),
   status: Joi.string().trim().min(3).max(20).optional(),
+});
+exports.shareTask = Joi.object({
+  sharedWith: JoiObjectId().min(1).required(),
 });
 
 exports.checkTaskId = Joi.object({

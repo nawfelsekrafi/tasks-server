@@ -7,6 +7,7 @@ const {
   updateTask,
   getTasks,
   checkTaskId,
+  shareTask,
 } = require("./schemas/taskSchemas");
 const { schemaValidator } = require("../../middlewares/schemaValidator");
 
@@ -163,6 +164,39 @@ router.put(
   authController.protect,
   schemaValidator(checkTaskId, "params"),
   schemaValidator(updateTask),
+  taskController.updateTask
+);
+/**
+ * @swagger
+ * /tasks/{id}/share:
+ *   put:
+ *     summary: share one task by id
+ *     tags: [Task]
+ *     parameters:
+ *      - in: path
+ *        name: id
+ *     requestBody:
+ *         required: true
+ *         content:
+ *            application/json:
+ *                schema:
+ *                   $ref: '#/components/schemas/ShareTask'
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               $ref: '#/components/schemas/Task'
+ *     security:
+ *      - bearerAuth: []
+ */
+
+router.put(
+  "/:id/share",
+  authController.protect,
+  schemaValidator(checkTaskId, "params"),
+  schemaValidator(shareTask),
   taskController.updateTask
 );
 

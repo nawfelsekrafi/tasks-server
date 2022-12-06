@@ -46,6 +46,13 @@ exports.getMyTasks = asyncHandler(async (req, res) => {
 
   return new SuccessResponsePagination(docs, meta).send(res);
 });
+exports.shareMyTask = asyncHandler(async (req, res) => {
+  const task = await TaskRepo.findByIdAndUpdate(req.params.id, req.body);
+  if (!task) {
+    throw new NotFoundError("No task found with that id");
+  }
+  return new SuccessMsgDataResponse(task, "task shared successfully").send(res);
+});
 exports.deleteTask = asyncHandler(async (req, res) => {
   const task = await TaskRepo.findOneByObj({
     _id: req.params.id,
