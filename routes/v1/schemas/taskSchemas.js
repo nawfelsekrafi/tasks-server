@@ -86,6 +86,9 @@ exports.updateTask = Joi.object({
 exports.shareTask = Joi.object({
   sharedWith: JoiObjectId().min(1).required(),
 });
+exports.unshareTask = Joi.object({
+  sharedWith: JoiObjectId().min(1).required(),
+});
 
 exports.checkTaskId = Joi.object({
   id: JoiObjectId().required(),

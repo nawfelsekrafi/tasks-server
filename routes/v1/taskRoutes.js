@@ -8,6 +8,7 @@ const {
   getTasks,
   checkTaskId,
   shareTask,
+  unshareTask,
 } = require("./schemas/taskSchemas");
 const { schemaValidator } = require("../../middlewares/schemaValidator");
 
@@ -71,6 +72,61 @@ router.get(
   authController.protect,
   schemaValidator(getTasks, "query"),
   taskController.getMyTasks
+);
+
+/**
+ * @swagger
+ * /tasks/shared/me:
+ *   get:
+ *     summary: Returns the list of tasks Shared To Me
+ *     tags: [Task]
+ *     parameters:
+ *        - in: query
+ *          name: search
+ *          schema:
+ *            type: string
+ *        - in: query
+ *          name: title
+ *          schema:
+ *            type: string
+ *        - in: query
+ *          name: status
+ *          schema:
+ *            type: string
+ *        - in: query
+ *          name: deleted
+ *          schema:
+ *            type: string
+ *        - in: query
+ *          name: sort
+ *          schema:
+ *            type: string
+ *        - in: query
+ *          name: page
+ *          schema:
+ *            type: integer
+ *        - in: query
+ *          name: perPage
+ *          schema:
+ *            type: integer
+ *     responses:
+ *       200:
+ *         description: The list of the tasks Shared to me
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Task'
+ *     security:
+ *      - bearerAuth: []
+ */
+
+router.get(
+  "/shared/me",
+  authController.protect,
+  schemaValidator(getTasks, "query"),
+  taskController.getTasksSharedToMe
 );
 
 /**
@@ -197,7 +253,40 @@ router.put(
   authController.protect,
   schemaValidator(checkTaskId, "params"),
   schemaValidator(shareTask),
-  taskController.updateTask
+  taskController.shareMyTask
+);
+/**
+ * @swagger
+ * /tasks/{id}/unshare:
+ *   put:
+ *     summary: unshare one task by id
+ *     tags: [Task]
+ *     parameters:
+ *      - in: path
+ *        name: id
+ *     requestBody:
+ *         required: true
+ *         content:
+ *            application/json:
+ *                schema:
+ *                   $ref: '#/components/schemas/ShareTask'
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               $ref: '#/components/schemas/Task'
+ *     security:
+ *      - bearerAuth: []
+ */
+
+router.put(
+  "/:id/unshare",
+  authController.protect,
+  schemaValidator(checkTaskId, "params"),
+  schemaValidator(unshareTask),
+  taskController.unshareMyTask
 );
 
 /**
