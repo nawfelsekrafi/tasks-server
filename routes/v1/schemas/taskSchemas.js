@@ -58,7 +58,7 @@ const { JoiObjectId } = require("../../../middlewares/schemaValidator");
  *       properties:
  *         sharedWith:
  *           type: [string]
- *           description: id of user/users to share the task with
+ *           description: id of user to share the task with, it should be valid, and not equals to the creator id
  */
 
 exports.getTasks = Joi.object({
