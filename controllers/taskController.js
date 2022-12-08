@@ -10,17 +10,6 @@ const {
 const TaskRepo = require("../db/repositories/taskRepo");
 const UserRepo = require("../db/repositories/userRepo");
 
-exports.getTask = asyncHandler(async (req, res) => {
-  const task = await TaskRepo.findOneByObj({
-    _id: req.params.id,
-    user: req.user,
-    deletedAt: null,
-  });
-  if (!task) {
-    throw new NotFoundError("No task found with that id");
-  }
-  return new SuccessResponse(task).send(res);
-});
 exports.createTask = asyncHandler(async (req, res) => {
   let task = await TaskRepo.create({ user: req.user.id, ...req.body });
 
@@ -45,6 +34,22 @@ exports.getMyTasks = asyncHandler(async (req, res) => {
   const { docs, ...meta } = tasks;
 
   return new SuccessResponsePagination(docs, meta).send(res);
+});
+exports.getTask = asyncHandler(async (req, res) => {
+  const task = await TaskRepo.findOneByObj({
+    _id: req.params.id,
+    deletedAt: null,
+  });
+  if (!task) {
+    throw new NotFoundError("No task found with that id");
+  }
+  if (
+    !task.sharedWith.includes(req.user.id) &&
+    task.user.toString() !== req.user.id
+  ) {
+    throw new BadRequestError("You can't get on this task");
+  }
+  return new SuccessResponse(task).send(res);
 });
 exports.shareMyTask = asyncHandler(async (req, res) => {
   const task = await TaskRepo.findOneByObj({
