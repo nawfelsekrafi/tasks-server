@@ -55,10 +55,20 @@ const { JoiObjectId } = require("../../../middlewares/schemaValidator");
  *           description: task status todo or in progress or completed
  *     ShareTask:
  *       type: object
+ *       required:
+ *         - sharedWith
  *       properties:
  *         sharedWith:
  *           type: [string]
  *           description: id of user to share the task with, it should be valid, and not equals to the creator id
+ *     UnshareTask:
+ *       type: object
+ *       required:
+ *         - sharedWith
+ *       properties:
+ *         sharedWith:
+ *           type: [string]
+ *           description: id of user to unshare the task with, it should be valid, and not equals to the creator id, and the id should be present previously in SharedWith array of the task
  */
 
 exports.getTasks = Joi.object({
