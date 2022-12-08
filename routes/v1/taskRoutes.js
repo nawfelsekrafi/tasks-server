@@ -9,6 +9,7 @@ const {
   checkTaskId,
   shareTask,
   unshareTask,
+  commentTask,
 } = require("./schemas/taskSchemas");
 const { schemaValidator } = require("../../middlewares/schemaValidator");
 
@@ -131,6 +132,33 @@ router.get(
 
 /**
  * @swagger
+ * /tasks/{id}/comments:
+ *   get:
+ *     summary: Returns the list of comments of a task
+ *     tags: [Task]
+ *     parameters:
+ *      - in: path
+ *        name: id
+ *     responses:
+ *       200:
+ *         description: the list of comments of a task
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Comment'
+ *     security:
+ *      - bearerAuth: []
+ */
+
+router.get(
+  "/:id/comments",
+  authController.protect,
+  taskController.getCommentsByTaskId
+);
+/**
+ * @swagger
  * /tasks:
  *   post:
  *     summary: task Creation
@@ -221,6 +249,39 @@ router.put(
   schemaValidator(checkTaskId, "params"),
   schemaValidator(updateTask),
   taskController.updateTask
+);
+/**
+ * @swagger
+ * /tasks/{id}/comment:
+ *   put:
+ *     summary: Comment a task
+ *     tags: [Task]
+ *     parameters:
+ *      - in: path
+ *        name: id
+ *     requestBody:
+ *         required: true
+ *         content:
+ *            application/json:
+ *                schema:
+ *                   $ref: '#/components/schemas/CreateComment'
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               $ref: '#/components/schemas/Comment'
+ *     security:
+ *      - bearerAuth: []
+ */
+
+router.put(
+  "/:id/comment",
+  authController.protect,
+  schemaValidator(checkTaskId, "params"),
+  schemaValidator(commentTask),
+  taskController.commentTask
 );
 /**
  * @swagger

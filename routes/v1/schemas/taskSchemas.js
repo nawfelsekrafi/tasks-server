@@ -69,6 +69,14 @@ const { JoiObjectId } = require("../../../middlewares/schemaValidator");
  *         sharedWith:
  *           type: [string]
  *           description: id of user to unshare the task with, it should be valid, and not equals to the creator id, and the id should be present previously in SharedWith array of the task
+ *     CommentTask:
+ *       type: object
+ *       required:
+ *         - content
+ *       properties:
+ *         content:
+ *           type: string
+ *           description: The comment content
  */
 
 exports.getTasks = Joi.object({
@@ -102,4 +110,8 @@ exports.unshareTask = Joi.object({
 
 exports.checkTaskId = Joi.object({
   id: JoiObjectId().required(),
+});
+
+exports.commentTask = Joi.object({
+  content: Joi.string().trim().min(1).max(200).required(),
 });

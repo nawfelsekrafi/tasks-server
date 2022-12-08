@@ -9,6 +9,7 @@ const {
 
 const TaskRepo = require("../db/repositories/taskRepo");
 const UserRepo = require("../db/repositories/userRepo");
+const CommentRepo = require("../db/repositories/commentRepo");
 
 exports.createTask = asyncHandler(async (req, res) => {
   let task = await TaskRepo.create({ user: req.user.id, ...req.body });
@@ -47,7 +48,7 @@ exports.getTask = asyncHandler(async (req, res) => {
     !task.sharedWith.includes(req.user.id) &&
     task.user.toString() !== req.user.id
   ) {
-    throw new BadRequestError("You can't get on this task");
+    throw new BadRequestError("You can't get this task");
   }
   return new SuccessResponse(task).send(res);
 });
@@ -155,5 +156,63 @@ exports.updateTask = asyncHandler(async (req, res) => {
   return new SuccessMsgDataResponse(
     updatedTask,
     "task updated successfully"
+  ).send(res);
+});
+exports.getCommentsByTaskId = asyncHandler(async (req, res) => {
+  const { page, perPage } = req.query;
+  const options = {
+    page: parseInt(page, 10) || 1,
+    limit: parseInt(perPage, 10) || 10,
+  };
+
+  const task = await TaskRepo.findOneByObj({
+    _id: req.params.id,
+    deletedAt: null,
+  });
+
+  if (!task) {
+    throw new NotFoundError("No task found with that id");
+  }
+  if (
+    !task.sharedWith.includes(req.user.id) &&
+    task.user.toString() !== req.user.id
+  ) {
+    throw new BadRequestError("You can't see comments on this task");
+  }
+  const comments = await CommentRepo.findByObjPaginate(
+    { task: req.params.id },
+    options,
+    req.query
+  );
+  if (!comments) {
+    return new SuccessMsgResponse("No comments found").send(res);
+  }
+  return new SuccessResponse(comments).send(res);
+});
+
+exports.commentTask = asyncHandler(async (req, res) => {
+  let task = await TaskRepo.findOneByObj({
+    _id: req.params.id,
+    deletedAt: null,
+  });
+  if (!task) {
+    throw new NotFoundError("No task found with that id");
+  }
+  if (
+    !task.sharedWith.includes(req.user.id) &&
+    task.user.toString() !== req.user.id
+  ) {
+    throw new BadRequestError("You can't comment on this task");
+  }
+
+  let comment = await CommentRepo.create({
+    user: req.user.id,
+    task: req.params.id,
+    ...req.body,
+  });
+
+  return new SuccessMsgDataResponse(
+    comment,
+    "Comment created successfully"
   ).send(res);
 });

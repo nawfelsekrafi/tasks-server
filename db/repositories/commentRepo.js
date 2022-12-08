@@ -34,7 +34,7 @@ module.exports = class CommentRepo {
       .filter()
       .sort()
       .limitFields()
-      .search(["title", "description"]);
+      .search(["content"]);
 
     let optionsPaginate = {
       limit: options.limit ? options.limit : null,

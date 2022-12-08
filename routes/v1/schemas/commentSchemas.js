@@ -9,3 +9,15 @@ const { JoiObjectId } = require("../../../middlewares/schemaValidator");
  *          scheme: bearer
  *          bearerFormat: JWT
  */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Comment:
+ *       type: object
+ *       properties:
+ *         content:
+ *           type: string
+ *           description: The comment content
+ */

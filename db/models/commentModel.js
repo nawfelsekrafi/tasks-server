@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
 const commentSchema = new mongoose.Schema(
   {
     content: {
@@ -16,10 +17,13 @@ const commentSchema = new mongoose.Schema(
       ref: "Task",
       required: [true, "Comment must has a related task"],
     },
+    deletedAt: Date,
   },
   {
     timestamps: true,
   }
 );
+
+commentSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("Comment", commentSchema);
